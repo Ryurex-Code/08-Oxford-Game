@@ -1,0 +1,6 @@
+pandas
+numpy
+python-dotenv
+groq
+colorama
+requests
