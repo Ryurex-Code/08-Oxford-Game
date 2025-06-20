@@ -1,6 +1,6 @@
 """
 Oxford Vocabulary Trainer - Main Entry Point
-AI-powered vocabulary learning game using Oxford 3000 words
+AI-powered vocabulary learning game using Oxford 5000 words
 
 Author: Rafi Project
 Version: 1.0.0
@@ -72,7 +72,7 @@ def display_welcome():
     
     print(f"{Colors.WARNING}📋 Setup Requirements:{Colors.RESET}")
     print("1. 🔑 Groq API Key (free at https://console.groq.com/)")
-    print("2. 📊 Oxford 3000 data file (included)")
+    print("2. 📊 Oxford 5000 data file (included)")
     print("3. 🐍 Python packages (install with: pip install -r requirements.txt)")
     
     print(f"\n{Colors.INFO}🚀 Getting Started:{Colors.RESET}")
@@ -111,10 +111,9 @@ def main():
     try:
         # Initialize components
         print_info("🔧 Initializing Oxford Vocabulary Trainer...")
-        
-        # Load data
+          # Load data
         data_dir = current_dir / 'data'
-        oxford_file = data_dir / 'oxford_3000.csv'
+        oxford_file = data_dir / 'oxford_5000.csv'
         
         print_info(f"📚 Loading vocabulary data from {oxford_file.name}...")
         vocabulary_df = load_oxford_data(str(oxford_file))
@@ -173,10 +172,9 @@ def quick_test():
         for issue in issues:
             print(f"  {issue}")
         return
-    
-    # Test data loading
+      # Test data loading
     data_dir = current_dir / 'data'
-    oxford_file = data_dir / 'oxford_3000.csv'
+    oxford_file = data_dir / 'oxford_5000.csv'
     df = load_oxford_data(str(oxford_file))
     
     if not df.empty:

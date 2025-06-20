@@ -135,7 +135,7 @@ class OxfordVocabGame:
             
             print(f"\n{Colors.WARNING}Choose your game mode:{Colors.RESET}")
             print("1. 🎯 Custom Mode (Choose specific level)")
-            print("2. 🎲 Adventure Mode (Random levels A1-B2)")
+            print("2. 🎲 Adventure Mode (Random levels A1-C1)")
             print("3. 📈 View Statistics")
             print("4. ⚙️  Settings")
             print("5. ❌ Exit")
@@ -168,10 +168,13 @@ class OxfordVocabGame:
         for i, level in enumerate(levels, 1):
             description = get_level_description(level)
             top_score = self.top_scores.get('by_level', {}).get(level, 0)
-            print(f"{i}. {level.upper()} - {description} (Best: {top_score})")
+            if level == 'c2':
+                print(f"{i}. {level.upper()} - {description} (Best: {top_score}) {Colors.WARNING}[Not available in Oxford 5000]{Colors.RESET}")
+            else:
+                print(f"{i}. {level.upper()} - {description} (Best: {top_score})")
         
+        print(f"\n{Colors.INFO}📝 Note: Oxford 5000 contains words from A1-C1 (C2 words are not included){Colors.RESET}")
         print("7. 🔄 Back to main menu")
-        
         choice = input(f"\n{Colors.BOLD}Choose level (1-7): {Colors.RESET}").strip()
         
         try:
@@ -191,11 +194,11 @@ class OxfordVocabGame:
             time.sleep(1)
     
     def _adventure_mode(self):
-        """Adventure mode - random levels A1-B2"""
+        """Adventure mode - random levels A1-C1"""
         clear_screen()
         print_header("🎲 Adventure Mode", 50)
         
-        print(f"{Colors.INFO}Adventure Mode - Random levels from A1 to B2!{Colors.RESET}")
+        print(f"{Colors.INFO}Adventure Mode - Random levels from A1 to C1!{Colors.RESET}")
         print(f"{Colors.WARNING}Each word will be from a random level to keep you on your toes!{Colors.RESET}\n")
         
         top_score = self.top_scores.get('by_mode', {}).get('adventure', 0)
@@ -208,11 +211,11 @@ class OxfordVocabGame:
     def _play_game(self, level: Optional[str], mode: str):
         """
         Main game loop
-        
-        Args:
+          Args:
             level: CEFR level or None for random
             mode: 'custom' or 'adventure'
-        """        # Initialize session
+        """
+        # Initialize session
         self.current_score = 0
         self.session_stats = {
             'start_time': datetime.now().isoformat(),
@@ -223,16 +226,15 @@ class OxfordVocabGame:
             'level_stats': {},
             'wrong_answers': [],  # Store wrong answer details
             'mode': mode,
-            'target_level': level
-        }
+            'target_level': level        }
         
-        print_info(f"Game started! Mode: {mode.title()}, Level: {level.upper() if level else 'Random A1-B2'}")
+        print_info(f"Game started! Mode: {mode.title()}, Level: {level.upper() if level else 'Random A1-C1'}")
         
         while True:
             # Select word based on mode
             if mode == 'adventure':
-                # Random level selection for adventure mode
-                adventure_levels = ['a1', 'a2', 'b1', 'b2']
+                # Random level selection for adventure mode (A1-C1)
+                adventure_levels = ['a1', 'a2', 'b1', 'b2', 'c1']
                 current_level = random.choice(adventure_levels)
                 word_data = self.word_picker.get_weighted_word(current_level)
             else:
@@ -509,16 +511,16 @@ class OxfordVocabGame:
                     accuracy = (session.get('words_correct', 0) / session['words_attempted']) * 100
                 
                 print(f"   {i}. Score: {score:2d} | Mode: {mode:9s} | Level: {level or 'random':6s} | Accuracy: {accuracy:5.1f}%")
-        
-        # Word picker statistics
+          # Word picker statistics
         print(f"\n{Colors.INFO}🎯 Learning Progress:{Colors.RESET}")
-        for level in ['a1', 'a2', 'b1', 'b2']:
+        for level in ['a1', 'a2', 'b1', 'b2', 'c1']:
             level_stats = self.word_picker.get_level_statistics(level)
             mastery = level_stats.get('mastery_level', 0)
             avg_accuracy = level_stats.get('average_accuracy', 0)
             total_words = level_stats.get('total_words', 0)
             
-            print(f"   {level.upper()}: {total_words:4d} words | Mastery: {mastery:5.1f}% | Avg Accuracy: {avg_accuracy:5.1f}%")
+            if total_words > 0:  # Only show levels that have words
+                print(f"   {level.upper()}: {total_words:4d} words | Mastery: {mastery:5.1f}% | Avg Accuracy: {avg_accuracy:5.1f}%")
         
         # Difficult words
         difficult_words = self.word_picker.get_difficult_words(limit=5)
@@ -699,7 +701,7 @@ class OxfordVocabGame:
         print()
         print(f"{Colors.INFO}🎮 Game Modes:{Colors.RESET}")
         print(f"   • Custom Mode: Choose specific CEFR level")
-        print(f"   • Adventure Mode: Random levels A1-B2")
+        print(f"   • Adventure Mode: Random levels A1-C1")
         print()
         print(f"{Colors.INFO}📊 Enhanced Statistics:{Colors.RESET}")
         print(f"   • Recently appeared words tracking (last 10)")
